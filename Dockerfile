@@ -1,24 +1,20 @@
-# Use a imagem base oficial do Node.js
-FROM node:20.10.0
+# Use a imagem oficial do Node.js
+FROM node:20
 
-# Defina o diretório de trabalho dentro do contêiner
+# Define o diretório de trabalho no container
 WORKDIR /app
 
-# Copie o arquivo package.json e yarn.lock para o diretório de trabalho
+# Copia os arquivos de configuração primeiro para aproveitar o cache do Docker
 COPY package.json yarn.lock ./
 
-# Instale as dependências do projeto
+# Instala as dependências
 RUN yarn install
 
-# Copie todos os arquivos do projeto para o diretório de trabalho
+# Copia o restante do código
 COPY . .
 
-# Reinstale todas as dependências para garantir a recompilação de módulos nativos
-RUN yarn install --force
-
-# Exponha a porta que a aplicação irá rodar (substitua 3333 pela porta que seu app utiliza)
+# Expõe a porta usada pela aplicação
 EXPOSE 3333
 
-# Comando para rodar a aplicação e as migrações
-CMD ["sh", "-c", "yarn migrate && yarn start"]
-
+# Comando para iniciar a aplicação
+CMD ["yarn", "start"]
